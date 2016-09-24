@@ -1,33 +1,44 @@
-db:
-  build: db
+letsencrypt:
+  image: jrcs/letsencrypt-nginx-proxy-companion
   volumes:
-    - ./volumes/db/var/lib/postgresql/data:/var/lib/postgresql/data
-    - /etc/localtime:/etc/localtime:ro
-  # uncomment the following to enable backup
-  #environment:
-  #  - AWS_ACCESS_KEY_ID=XXXX
-  #  - AWS_SECRET_ACCESS_KEY=XXXX
-  #  - WALE_S3_PREFIX=s3://BUCKET_NAME/PATH
-  #  - AWS_REGION=us-east-1
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - ./certificates:/etc/nginx/certs:rw
+  volumes_from:
+    - nginx
+
+nginx:
+  image: jwilder/nginx-proxy
+  volumes:
+    - /var/run/docker.sock:/tmp/docker.sock:ro
+    - ./certificates:/etc/nginx/certs:ro
+    - ./nginx/vhost.d:/etc/nginx/vhost.d
+    - ./nginx/html:/usr/share/nginx/html
+  ports:
+    - 80:80
+    - 443:443
+  links:
+    - app
+
+postgres:
+  image: postgres
+  volumes:
+    - /container-data/mattermost/dumps:/dumps
+    - /container-data/mattermost/pgdata:/pgdata
+  environment:
+   - POSTGRES_PASSWORD=password
+   - PGDATA=/pgdata
+
 app:
   build: app
   links:
-    - db:db
+    - db:postgres
   volumes:
     - ./volumes/app/mattermost/config:/mattermost/config:rw
     - ./volumes/app/mattermost/data:/mattermost/data:rw
     - /etc/localtime:/etc/localtime:ro
-web:
-  build: web
   ports:
-    - "80:80"
-    - "443:443"
-  links:
-    - app:app
-  volumes:
-      # This directory must have cert files
-    - ./volumes/web/cert:/cert:ro
-    - /etc/localtime:/etc/localtime:ro
+    - "3000:80"
   environment:
-    - MATTERMOST_ENABLE_SSL=false
-    - PLATFORM_PORT_80_TCP_PORT=80
+    VIRTUAL_HOST: mattermost.loomio.io
+    LETSENCRYPT_HOST: mattermost.loomio.io
+    LETSENCRYPT_EMAIL: rob@loomio.org
