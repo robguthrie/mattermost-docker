@@ -19,19 +19,21 @@ nginx:
   links:
     - app
 
-postgres:
+db:
   image: postgres
   volumes:
     - /container-data/mattermost/dumps:/dumps
     - /container-data/mattermost/pgdata:/pgdata
   environment:
-   - POSTGRES_PASSWORD=password
+   - POSTGRES_USER=mmuser
+   - POSTGRES_PASSWORD=mmuser_password
+   - POSTGRES_DB=mattermost
    - PGDATA=/pgdata
 
 app:
   build: app
   links:
-    - db:postgres
+    - db:db
   volumes:
     - ./volumes/app/mattermost/config:/mattermost/config:rw
     - ./volumes/app/mattermost/data:/mattermost/data:rw
@@ -39,6 +41,6 @@ app:
   ports:
     - "3000:80"
   environment:
-    VIRTUAL_HOST: mattermost.loomio.io
-    LETSENCRYPT_HOST: mattermost.loomio.io
+    VIRTUAL_HOST: chat.enspiral.com
+    LETSENCRYPT_HOST: chat.enspiral.com
     LETSENCRYPT_EMAIL: rob@loomio.org
