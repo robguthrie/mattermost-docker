@@ -46,6 +46,6 @@ app:
     LETSENCRYPT_EMAIL: rob@loomio.org
 
 matterbridge:
-  image: 42wim/matterbridge:0.6.1
+  build: matterbridge
   volumes:
     - ./matterbridge.conf:/matterbridge.conf
