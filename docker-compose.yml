@@ -20,7 +20,7 @@ nginx:
     - app
 
 db:
-  image: postgres
+  image: postgres:9.5
   volumes:
     - /container-data/mattermost/dumps:/dumps
     - /container-data/mattermost/pgdata:/pgdata
@@ -47,5 +47,7 @@ app:
 
 matterbridge:
   build: matterbridge
+  links:
+    - app:app
   volumes:
-    - ./matterbridge.conf:/matterbridge.conf
+    - ./matterbridge.toml:/matterbridge.toml
