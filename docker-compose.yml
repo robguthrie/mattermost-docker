@@ -44,3 +44,8 @@ app:
     VIRTUAL_HOST: chat.enspiral.com
     LETSENCRYPT_HOST: chat.enspiral.com
     LETSENCRYPT_EMAIL: rob@loomio.org
+
+matterbridge:
+  image: 42wim/matterbridge:0.6.1
+  volumes:
+    - ./matterbridge.conf:/matterbridge.conf
