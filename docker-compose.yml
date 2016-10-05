@@ -45,9 +45,3 @@ app:
     LETSENCRYPT_HOST: chat.enspiral.com
     LETSENCRYPT_EMAIL: rob@loomio.org
 
-matterbridge:
-  build: matterbridge
-  links:
-    - app:app
-  volumes:
-    - ./matterbridge.toml:/matterbridge.toml
