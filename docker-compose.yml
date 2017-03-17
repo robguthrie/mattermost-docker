@@ -1,5 +1,5 @@
 letsencrypt:
-  image: jrcs/letsencrypt-nginx-proxy-companion
+  image: alastaircoote/docker-letsencrypt-nginx-proxy-companion
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
     - ./certificates:/etc/nginx/certs:rw
@@ -32,11 +32,13 @@ db:
 
 app:
   build: app
+  restart: unless-stopped
   links:
     - db:db
   volumes:
     - ./volumes/app/mattermost/config:/mattermost/config:rw
     - ./volumes/app/mattermost/data:/mattermost/data:rw
+    - ./volumes/app/mattermost/logs:/mattermost/logs:rw
     - /etc/localtime:/etc/localtime:ro
   ports:
     - "3000:80"
@@ -44,4 +46,3 @@ app:
     VIRTUAL_HOST: chat.enspiral.com
     LETSENCRYPT_HOST: chat.enspiral.com
     LETSENCRYPT_EMAIL: rob@loomio.org
-
