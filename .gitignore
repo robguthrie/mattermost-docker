@@ -1,4 +1,15 @@
+<<<<<<< HEAD
 certificates/
 nginx/
 volumes/
 matterbridge/
+=======
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+# Generated data
+volumes
+>>>>>>> fb268003cbde5858c95a1526089a6bed1adc2a6d
